@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تأكيد الطلب - Boutique</title>
+    <style>
+        :root {
+            --bg-color: #FDFBF7;
+            --card-bg: #FFFFFF;
+            --primary-color: #D4A373;
+            --accent-pink: #F8EDEB;
+            --text-color: #2D3142;
+            --border-color: #E6CCB2;
+            --whatsapp-color: #25D366;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+        .order-container { background-color: var(--card-bg); width: 100%; max-width: 450px; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(212, 163, 115, 0.15); border: 2px solid var(--accent-pink); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h2 { color: var(--primary-color); font-size: 24px; margin-bottom: 5px; }
+        .header p { color: #8C7A6B; font-size: 14px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; color: #5C4033; }
+        input, select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; background-color: var(--accent-pink); font-size: 14px; color: var(--text-color); outline: none; }
+        input:focus { border-color: var(--primary-color); background-color: #fff; }
+        .row { display: flex; gap: 10px; }
+        .row .form-group { flex: 1; }
+        .btn-whatsapp { width: 100%; background-color: var(--whatsapp-color); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; }
+        .error-message { color: #d90429; font-size: 12px; margin-top: 4px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="order-container">
+        <div class="header">
+            <h2>✨ استمارة الطلب السريع</h2>
+            <p>املئي المعلومات أدناه لتأكيد طلبك عبر الواتساب</p>
+        </div>
+        <form id="orderForm">
+            <input type="hidden" id="whatsappNumber" value="212600000000">
+            <div class="form-group">
+                <label for="fullName">الاسم الكامل</label>
+                <input type="text" id="fullName" placeholder="مثال: فاطمة الزهراء العلوي">
+                <div class="error-message" id="nameError">المرجو إدخال الاسم الكامل</div>
+            </div>
+            <div class="form-group">
+                <label for="phone">رقم الهاتف</label>
+                <input type="tel" id="phone" placeholder="مثال: 0612345678">
+                <div class="error-message" id="phoneError">المرجو إدخال رقم هاتف صحيح</div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="city">المدينة</label>
+                    <input type="text" id="city" placeholder="مثال: الدار البيضاء">
+                    <div class="error-message" id="cityError">أدخل المدينة</div>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">الكمية</label>
+                    <input type="number" id="quantity" value="1" min="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="productName">اسم المنتوج</label>
+                <input type="text" id="productName" placeholder="مثال: حقيبة جلدية راقية - بيج">
+                <div class="error-message" id="productError">أدخل اسم المنتوج</div>
+            </div>
+            <div class="form-group">
+                <label for="address">العنوان التفصيلي</label>
+                <input type="text" id="address" placeholder="الشارع، الحي، رقم المنزل...">
+                <div class="error-message" id="addressError">أدخل العنوان التفصيلي</div>
+            </div>
+            <button type="button" class="btn-whatsapp" onclick="sendToWhatsApp()">
+                <span>Confirmer ma commande sur WhatsApp</span>
+            </button>
+        </form>
+    </div>
+    <script>
+        function sendToWhatsApp() {
+            const shopNumber = document.getElementById('whatsappNumber').value.trim();
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const quantity = document.getElementById('quantity').value.trim();
+            const productName = document.getElementById('productName').value.trim();
+            const address = document.getElementById('address').value.trim();
+            let isValid = true;
+            function toggleError(id, show) { document.getElementById(id).style.display = show ? 'block' : 'none'; }
+            toggleError('nameError', fullName === ""); if(fullName === "") isValid = false;
+            toggleError('phoneError', phone.length < 10); if(phone.length < 10) isValid = false;
+            toggleError('cityError', city === ""); if(city === "") isValid = false;
+            toggleError('productError', productName === ""); if(productName === "") isValid = false;
+            toggleError('addressError', address === ""); if(address === "") isValid = false;
+            if (!isValid) return;
+            let message = `*السلام عليكم، بغيت نطلب هاد المنتوج:*%0A%0A` +
+                          `🛍️ *المنتوج:* ${encodeURIComponent(productName)}%0A` +
+                          `🔢 *الكمية:* ${encodeURIComponent(quantity)}%0A%0A` +
+                          `👤 *الاسم:* ${encodeURIComponent(fullName)}%0A` +
+                          `📞 *الهاتف:* ${encodeURIComponent(phone)}%0A` +
+                          `🏙️ *المدينة:* ${encodeURIComponent(city)}%0A` +
+                          `📍 *العنوان:* ${encodeURIComponent(address)}`;
+            window.open(`https://wa.me/${shopNumber}?text=${message}`, '_blank');
+        }
+    </script>
+</body>
+</html>
